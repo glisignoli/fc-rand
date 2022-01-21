@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <meta charset="UTF-8" />
+  <title>Fightcade Randomizer</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="" />
+  <style></style>
+  <body>
+    <div class="">
+      <h1>Game Randomizer</h1>
+      <!-- <form> -->
+        {% set i = 0 -%} {% for c in categories -%}
+        <input
+          type="checkbox"
+          id="cid{{ i }}"
+          name="cid{{ i }}"
+          value="{{ c }}"
+        />
+        <label for="cid{{ i }}">{{ c }} </label><br />
+        {% set i = i + 1 -%} {% endfor %}
+        <p id="some_game"></p>
+        <button onclick="disableElement()">Randomize!</button>
+      <!-- </form> -->
+      <p>The machine is stopped.</p>
+    </div>
+    <script>
+        function disableElement() {
+          document.getElementById("some_game").innerHTML = "WOOT";
+        }
+    </script>
+
+  </body>
+</html>
