@@ -4,30 +4,172 @@
   <title>Fightcade Randomizer</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link rel="stylesheet" href="" />
-  <style></style>
-  <body>
-    <div class="">
-      <h1>Game Randomizer</h1>
-      <!-- <form> -->
-        {% set i = 0 -%} {% for c in categories -%}
-        <input
-          type="checkbox"
-          id="cid{{ i }}"
-          name="cid{{ i }}"
-          value="{{ c }}"
-        />
-        <label for="cid{{ i }}">{{ c }} </label><br />
-        {% set i = i + 1 -%} {% endfor %}
-        <p id="some_game"></p>
-        <button onclick="disableElement()">Randomize!</button>
-      <!-- </form> -->
-      <p>The machine is stopped.</p>
-    </div>
-    <script>
-        function disableElement() {
-          document.getElementById("some_game").innerHTML = "WOOT";
-        }
-    </script>
+  <style>
+    * {
+      margin: 0;
+      box-sizing: border-box;
+    }
 
+    #catSelect {
+      width: 100%;
+      margin: 1em 0;
+    }
+
+    body {
+      background: black;
+      font-size: 125%;
+      line-height: 1;
+      color: white;
+      font-family: Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    main > * + * {
+      margin-top: 0.75rem;
+    }
+
+    main {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      padding-left: 6rem;
+      padding-right: 6rem;
+    }
+
+    button {
+      width: 100%;
+
+      font-size: 1.75em;
+      font-weight: 700;
+
+      line-height: 1;
+      padding: 0.75rem;
+
+      background: orangered;
+      color: white;
+      border: none;
+
+      cursor: pointer;
+      transition: all 0.1s ease-out;
+    }
+
+    button:hover {
+      background: tomato;
+      color: white;
+    }
+
+    button:focus,
+    button:active {
+      outline: none;
+    }
+
+    button:active {
+      background: orangered;
+    }
+
+    #ranGame {
+      font-size: 4em;
+    }
+
+    h2 {
+      color: lightgreen;
+    }
+
+    .column {
+      float: left;
+      width: 50%;
+    }
+    
+    /* Clear floats after the columns */
+    .row:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+
+    @media (max-width: 30em) {
+      body {
+        font-size: 100%;
+        text-align: center;
+      }
+      main {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+      }
+      button {
+        font-size: 1.5em;
+        padding: 0.35em;
+      }
+    } ;
+  </style>
+  <body>
+    <main>
+      <div>
+        <h2>Select Categories &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp</h2>
+        <div class="row">
+          <div class="column">
+            {% for cat in categories_left %}
+            <label>
+              <input type="checkbox" name="categories_cb" value="{{ cat }}" />
+              {{ cat }}
+            </label><br>
+            {% endfor %}
+          </div>
+          <div class="column">
+            {% for cat in categories_right %}
+            <label>
+              <input type="checkbox" name="categories_cb" value="{{ cat }}" />
+              {{ cat }}
+            </label><br>
+            {% endfor %}
+          </div>
+        </div>
+
+        <button id="generate">Dice Roll</button>
+      </div>
+      <div id="ranGameContainer">Your Game is...</div>
+      <span id="ranGame"></span>
+    </main>
+    <script>
+      // Uses lodash lib to handle the filtering, check CDN in        settings.
+
+      // Categories and games
+      var catategories = {{ categories | tojson }}
+      var game_names = {{ games | tojson}}
+      
+      // Get a reference to the button
+      var button = document.getElementById("generate");
+
+      // Run the function on button click
+      button.onclick = function generate() {
+
+        var catategories_to_search = []
+        
+        // Find out check checkboxes are selected:
+        var markedCheckbox = document.getElementsByName('categories_cb');
+        for (var checkbox of markedCheckbox) {
+          if (checkbox.checked)
+            catategories_to_search.push(checkbox.value)
+        }
+
+        // For each category, find a random game
+        var ranGame = []
+        for (var cat of catategories_to_search) {
+          var cat_games = catategories[cat]
+          var ranGame_cat = cat_games[Math.floor(Math.random() * cat_games.length)]
+          ranGame.push(ranGame_cat)
+        }
+
+        // Choose a random game from ranGame
+        var ranGame_final = ranGame[Math.floor(Math.random() * ranGame.length)]
+
+        // Append to the dom
+        var el = document.getElementById("ranGame");
+        el.innerHTML = game_names[ranGame_final] + ": " + ranGame_final;
+      };
+    </script>
   </body>
 </html>

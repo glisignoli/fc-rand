@@ -11,6 +11,10 @@ app = Flask(__name__)
 def main():
     genres = Genres()
     games = Games()
+
+    # Remove any genres that don't have fightcade games in them:
+    genres.validate_genres(games.games.keys())
+
     page = Render()
 
     return page.render_page(genres.genres, games.games)

@@ -11,6 +11,7 @@ jinja2 = "*"
 pydocstyle = "*"
 flake8 = "*"
 mypy = "*"
+ipykernel = {editable = true, git = "https://github.com/ipython/ipykernel.git"}
 
 [requires]
 python_version = "3.10"
